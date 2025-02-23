@@ -1,0 +1,56 @@
+{{ define "config" -}}
+--username {{ .Values.mongodb.username }} \
+--host {{ .Values.mongodb.host }} \
+--password $(MONGODB_PASSWORD) \
+{{- end }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ .Release.Name }}-mongoimport
+spec:
+  schedule: "0 2 * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          initContainers:
+            - name: download-csv
+              image: busybox
+              command:
+                - /bin/sh
+                - -c
+              args:
+                - |-
+                  export yesterday=$(date -d "@$(($(date +%s) - 86400))" "+%Y-%m-%d") && \
+                  wget -P /data https://raw.githubusercontent.com/EvanLi/Github-Ranking/master/Data/github-ranking-$yesterday.csv
+              volumeMounts:
+                - name: data
+                  mountPath: /data
+          containers:
+            - name: mongoimport
+              image: mongo:latest
+              command:
+                - /bin/sh
+                - -c
+                - |-
+                  export yesterday=$(date -d "@$(($(date +%s) - 86400))" "+%Y-%m-%d");
+                  mongoimport \
+                    {{- include "config" . | nindent 20 }}
+                    --db {{ .Values.mongodb.database }} \
+                    --type csv \
+                    --file /data/github-ranking-$yesterday.csv \
+                    --headerline;
+                  mongosh \
+                    {{- include "config" . | nindent 20 }}
+                    --authenticationDatabase {{ .Values.mongodb.database }} \
+                    --eval "db['github-ranking-$yesterday'].createIndex({language: 1})" {{ .Values.mongodb.database }};
+              env:
+                - name: MONGODB_PASSWORD
+                  value: {{ .Values.mongodb.password }}
+              volumeMounts:
+                - name: data
+                  mountPath: /data
+          restartPolicy: OnFailure
+          volumes:
+            - name: data
+              emptyDir: { }

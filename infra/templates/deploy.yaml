@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: challenge-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: challenge-app
+  template:
+    metadata:
+      labels:
+        app: challenge-app
+    spec:
+      containers:
+      - name: challenge
+        image: ozby/challenge-2502:latest
+        env:
+          - name: MONGODB_HOSTNAME
+            value: {{ .Values.mongodb.host }}
+          - name: MONGODB_DBNAME
+            value: {{ .Values.mongodb.database }}
+          - name: MONGODB_USERNAME
+            value: {{ .Values.mongodb.username }}
+          - name: MONGODB_PASSWORD
+            value: {{ .Values.mongodb.password }}
+      imagePullSecrets:
+        - name: docker-credentials

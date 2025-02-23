@@ -1,0 +1,4 @@
+apiVersion: v2
+name: challenge deployment
+description: Helm chart for challenge-202502 by ozby
+version: 0.1.0
