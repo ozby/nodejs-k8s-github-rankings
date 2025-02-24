@@ -5,25 +5,25 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: challenge
-  namespace: argo-cd
+  name: challenge-202502
 spec:
-    project: default
-    source:
-        repo-url: 'https://github.com/ozby/challenge-202502.git'
-        path: infra
-        targetRevision: HEAD
-        helm:
-            valueFiles:
-                - values.yaml
-    destination:
-        server: 'https://kubernetes.production.svc'
-        namespace: challenge
-    syncPolicy:
-        automated:
-        prune: true
-        syncOptions:
-        - CreateNamespace=true
+  destination:
+    namespace: challenge-202502
+    server: https://kubernetes.default.svc
+  source:
+    path: infra
+    repoURL: https://github.com/ozby/challenge-202502.git
+    targetRevision: HEAD
+    helm:
+      valueFiles:
+        - values.yaml
+  sources: []
+  project: default
+  syncPolicy:
+      automated:
+      prune: true
+      syncOptions:
+      - CreateNamespace=true
 ```
 
 

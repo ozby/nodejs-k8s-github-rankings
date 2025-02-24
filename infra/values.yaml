@@ -3,8 +3,8 @@ ingress:
   host: challenge-202502.ozby.dev
   ingressClassName: nginx
 
-# mongodb: // INJECT FROM HELM CLI COMMAND FOR SECURITY
-#   host: mongodb.mongodb
-#   database: database
-#   username: username
-#   password: password
+mongodb:
+   host: mongodb.mongodb
+   database:
+   username:
+   password:
