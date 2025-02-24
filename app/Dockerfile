@@ -1,4 +1,4 @@
-FROM node:20-alpine3.19 As development
+FROM node:20-bullseye As development
 WORKDIR /usr/src/app
 COPY --chown=node:node package*.json ./
 RUN npm ci
@@ -6,7 +6,7 @@ COPY --chown=node:node . .
 RUN npm run test
 USER node
 
-FROM node:20-alpine3.19 As build
+FROM node:20-bullseye As build
 WORKDIR /usr/src/app
 COPY --chown=node:node package*.json ./
 COPY --chown=node:node --from=development /usr/src/app/node_modules ./node_modules
@@ -16,7 +16,7 @@ ENV NODE_ENV production
 RUN npm ci --only=production && npm cache clean --force
 USER node
 
-FROM node:20-alpine3.19 As production
+FROM node:20-bullseye As production
 COPY --chown=node:node --from=build /usr/src/app/node_modules ./node_modules
 COPY --chown=node:node --from=build /usr/src/app/dist ./dist
 

@@ -11,7 +11,7 @@ spec:
     project: default
     source:
         repo-url: 'https://github.com/ozby/challenge-202502.git'
-        path: chart
+        path: infra
         targetRevision: HEAD
         helm:
             valueFiles:
