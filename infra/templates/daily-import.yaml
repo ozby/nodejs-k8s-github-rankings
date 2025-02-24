@@ -1,7 +1,7 @@
 {{ define "config" -}}
 --username {{ .Values.mongodb.username }} \
 --host {{ .Values.mongodb.host }} \
---password $(MONGODB_PASSWORD) \
+--password {{ .Values.mongodb.password }} \
 {{- end }}
 apiVersion: batch/v1
 kind: CronJob
@@ -44,9 +44,6 @@ spec:
                     {{- include "config" . | nindent 20 }}
                     --authenticationDatabase {{ .Values.mongodb.database }} \
                     --eval "db['github-ranking-$yesterday'].createIndex({language: 1})" {{ .Values.mongodb.database }};
-              env:
-                - name: MONGODB_PASSWORD
-                  value: {{ .Values.mongodb.password }}
               volumeMounts:
                 - name: data
                   mountPath: /data

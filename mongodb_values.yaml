@@ -7,11 +7,6 @@ auth:
     - ozby-password-123
   databases:
     - ozby_db
-persistence:
-  size: 1Gi
-extraEnvVars:
-  - name: EXPERIMENTAL_DOCKER_DESKTOP_FORCE_QEMU
-    value: "1"
 livenessProbe:
   enabled: false
 readinessProbe:

@@ -1,0 +1,10 @@
+suite: Test service
+templates:
+  - templates/service.yaml
+tests:
+  - it: should create a service
+    asserts:
+      - isKind:
+          of: Service
+      - hasDocuments:
+          count: 1 

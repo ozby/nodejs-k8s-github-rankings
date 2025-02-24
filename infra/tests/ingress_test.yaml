@@ -1,0 +1,21 @@
+suite: Test ingress
+templates:
+  - templates/ingress.yaml
+tests:
+  - it: should create an ingress
+    set:
+      ingress:
+        enabled: true
+        host: challenge-202502.ozby.dev
+        ingressClassName: nginx
+    asserts:
+      - isKind:
+          of: Ingress
+      - equal:
+          path: spec.rules[0].host
+          value: challenge-202502.ozby.dev
+      - equal:
+          path: spec.ingressClassName
+          value: nginx
+      - hasDocuments:
+          count: 1 

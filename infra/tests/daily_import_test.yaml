@@ -1,0 +1,28 @@
+suite: Test daily import cronjob
+templates:
+  - templates/daily-import.yaml
+tests:
+  - it: should create a cronjob with correct MongoDB configuration
+    set:
+      mongodb:
+        host: mongodb.test
+        database: testdb
+        username: testuser
+        password: testpass
+    asserts:
+      - isKind:
+          of: CronJob
+      - matchRegex:
+          path: spec.schedule
+          pattern: ^[0-9\*\-\/,]+ [0-9\*\-\/,]+ [0-9\*\-\/,]+ [0-9\*\-\/,]+ [0-9\*\-\/,]+$
+      - matchRegex:
+          path: spec.jobTemplate.spec.template.spec.containers[0].command[2]
+          pattern: .*--host mongodb\.test.*
+      - matchRegex:
+          path: spec.jobTemplate.spec.template.spec.containers[0].command[2]
+          pattern: .*--username testuser.*
+      - matchRegex:
+          path: spec.jobTemplate.spec.template.spec.containers[0].command[2]
+          pattern: .*--db testdb.*
+      - hasDocuments:
+          count: 1

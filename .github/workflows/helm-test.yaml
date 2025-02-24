@@ -1,0 +1,51 @@
+name: Test Helm Chart
+defaults:
+  run:
+    shell: bash
+    working-directory: ./infra
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'infra/**'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'infra/**'
+
+jobs:
+  test:
+    name: Run Chart Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Helm
+        uses: azure/setup-helm@v3
+        with:
+          version: 'latest'
+
+      - name: Set up kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: 'latest'
+
+      - name: Create k8s Kind Cluster
+        uses: helm/kind-action@v1.8.0
+
+      - name: Run Helm unit tests
+        run: helm plugin install https://github.com/helm-unittest/helm-unittest.git
+
+      - name: Run Helm unit tests
+        run: helm unittest .
+
+      - name: Run import test
+        env:
+          RUN_ID: ${{ github.run_id }}
+          MONGODB_HOST: localhost:${{ job.services.mongodb.ports[27017] }}
+          MONGODB_DATABASE: testdb
+          MONGODB_USERNAME: testuser
+          MONGODB_PASSWORD: testpass
+        run: ./tests/test-import.sh

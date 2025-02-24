@@ -1,0 +1,43 @@
+suite: Test deployment
+templates:
+  - templates/deploy.yaml
+tests:
+  - it: should create a deployment
+    set:
+      mongodb:
+        host: mongodb.test
+        database: testdb
+        username: testuser
+        password: testpass
+    asserts:
+      - isKind:
+          of: Deployment
+      - equal:
+          path: spec.template.spec.containers[0].image
+          value: ghcr.io/ozby/challenge-202502-app:latest
+      - equal:
+          path: spec.template.spec.containers[0].env[0].name
+          value: MONGODB_HOSTNAME
+      - equal:
+          path: spec.template.spec.containers[0].env[0].value
+          value: mongodb.test
+      - equal:
+          path: spec.template.spec.containers[0].env[1].name
+          value: MONGODB_DBNAME
+      - equal:
+          path: spec.template.spec.containers[0].env[1].value
+          value: testdb
+      - equal:
+          path: spec.template.spec.containers[0].env[2].name
+          value: MONGODB_USERNAME
+      - equal:
+          path: spec.template.spec.containers[0].env[2].value
+          value: testuser
+      - equal:
+          path: spec.template.spec.containers[0].env[3].name
+          value: MONGODB_PASSWORD
+      - equal:
+          path: spec.template.spec.containers[0].env[3].value
+          value: testpass
+      - hasDocuments:
+          count: 1 
