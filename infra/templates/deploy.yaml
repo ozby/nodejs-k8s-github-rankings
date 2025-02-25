@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: challenge
-        image: ghcr.io/ozby/challenge-202502-app:latest
+        image: {{ .Values.deployment.image }}
         env:
           - name: MONGODB_HOSTNAME
             value: {{ .Values.mongodb.host }}

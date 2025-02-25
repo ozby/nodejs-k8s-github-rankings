@@ -3,6 +3,9 @@ ingress:
   host: challenge-202502.ozby.dev
   ingressClassName: nginx
 
+deployment:
+  image: ghcr.io/ozby/challenge-202502-app:latest
+
 mongodb:
    host: mongodb.mongodb
    database:

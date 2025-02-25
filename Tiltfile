@@ -28,12 +28,15 @@ docker_build(
 )
 
 
-k8s_yaml('infra/dev/api-nest.yaml')
-
-k8s_resource(
-    'api-nest',
-    labels=['backend']
+local_resource(
+    'run-migrations',
+    'kubectl -n challenge-202502 exec -it $(kubectl get pods -A -l app=api-nest -o jsonpath="{.items[0].metadata.name}") -- npm run migrate',
+    deps=['./app/package.json'],
+    resource_deps=['api-nest'], labels=['backend']
 )
+
+#k8s_yaml('infra/dev/api-nest.yaml')
+#k8s_resource('api-nest', labels=['backend'])
 
 
 # config.main_path is the absolute path to the Tiltfile being run
