@@ -2,13 +2,32 @@ version_settings(constraint='>=0.22.2')
 
 load('ext://namespace', 'namespace_create')
 namespace_create('challenge-202502')
-
-
 load('ext://helm_resource', 'helm_resource', 'helm_repo')
 
 helm_repo('bitnami', 'https://charts.bitnami.com/bitnami', labels=['common'])
 
-helm_resource('mongodb', 'bitnami/mongodb', flags=['--values=mongodb_values.yaml', '--version=12.1.31'], namespace='challenge-202502', resource_deps=['bitnami'])
+# Moving these variables to the top of the file would be better
+mongodb_username = 'mongo_user'
+mongodb_password = 'mongo_pw'
+mongodb_database = 'mongo_db'
+mongodb_version = '14.13'
+
+
+helm_resource(
+    'mongodb',
+    'bitnami/mongodb',
+    flags=[
+        '--values=./mongodb_values.yaml',
+        '--set=auth.databases[0]=' + mongodb_database,
+        '--set=auth.usernames[0]=' + mongodb_username,
+        '--set=auth.passwords[0]=' + mongodb_password,
+        '--set=livenessProbe.enabled=false',
+        '--set=readinessProbe.enabled=false',
+        '--version=' + mongodb_version,
+    ],
+    namespace='challenge-202502',
+    resource_deps=['bitnami']
+)
 k8s_resource('mongodb', port_forwards=[27017], labels=['common'], trigger_mode=TRIGGER_MODE_MANUAL)
 
 docker_build(
@@ -27,16 +46,29 @@ docker_build(
     ]
 )
 
+k8s_yaml(
+    helm(
+        './infra',
+        name='app',
+        namespace='challenge-202502',
+        set=[
+            'deployment.image="api-nest"',
+            'mongodb.host="mongodb"',
+            'mongodb.database=' + mongodb_database,
+            'mongodb.username=' + mongodb_username,
+            'mongodb.password=' + mongodb_password
+        ],
+  )
+)
+k8s_resource('challenge-app', port_forwards=[3000], labels=['app'])
 
 local_resource(
-    'run-migrations',
-    'kubectl -n challenge-202502 exec -it $(kubectl get pods -A -l app=api-nest -o jsonpath="{.items[0].metadata.name}") -- npm run migrate',
-    deps=['./app/package.json'],
-    resource_deps=['api-nest'], labels=['backend']
+   'trigger-import',
+   'kubectl create job --from=cronjob/app-mongoimport manual-import-$(date +%s) --namespace challenge-202502',
+    resource_deps=['challenge-app'], labels=['app'], trigger_mode=TRIGGER_MODE_MANUAL
 )
 
-#k8s_yaml('infra/dev/api-nest.yaml')
-#k8s_resource('api-nest', labels=['backend'])
+k8s_resource('app-mongoimport', labels=['app-cronjob'])
 
 
 # config.main_path is the absolute path to the Tiltfile being run
