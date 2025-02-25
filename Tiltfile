@@ -6,7 +6,6 @@ load('ext://helm_resource', 'helm_resource', 'helm_repo')
 
 helm_repo('bitnami', 'https://charts.bitnami.com/bitnami', labels=['common'])
 
-# Moving these variables to the top of the file would be better
 mongodb_username = 'mongo_user'
 mongodb_password = 'mongo_pw'
 mongodb_database = 'mongo_db'

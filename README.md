@@ -1,13 +1,13 @@
 # Fun Project
-Github Rankings fetcher with NodeJS and Kubernetes with dev environment using Tilt
+Github Rankings fetcher with NodeJS (nestjs) and Kubernetes with dev environment using Tilt
 
 ## CI/CD
 ### Handled by GitHub Actions
-
+tests helm chart, nestjs code as well as k8s cron job by creating a single node k8s (kind) in GH actions. 
 
 ## Run locally in development mode
 ```
-Requires a running local kubernetes cluster + tilt. Activate from Docker Desktop > settings > Kubernetes
+Requires a running local kubernetes cluster. Activate from Docker Desktop > settings > Kubernetes
 # instal tilt if not already installed: https://tilt.dev/
 tilt up
 
