@@ -37,7 +37,8 @@ helm upgrade --install "$RELEASE_NAME" . \
     --set mongodb.database="$MONGODB_DATABASE" \
     --set mongodb.username="$MONGODB_USERNAME" \
     --set mongodb.password="$MONGODB_PASSWORD" \
-    --wait
+    --debug \
+    --wait | sed -n '/USER-SUPPLIED VALUES:/q;p'
 
 echo "Triggering import job..."
 kubectl create job --from=cronjob/"$RELEASE_NAME"-mongoimport manual-import \

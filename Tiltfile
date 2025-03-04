@@ -1,7 +1,7 @@
 version_settings(constraint='>=0.22.2')
 
 load('ext://namespace', 'namespace_create')
-namespace_create('challenge-202502')
+namespace_create('nodejs-k8s-github-rankings')
 load('ext://helm_resource', 'helm_resource', 'helm_repo')
 
 helm_repo('bitnami', 'https://charts.bitnami.com/bitnami', labels=['common'])
@@ -24,7 +24,7 @@ helm_resource(
         '--set=readinessProbe.enabled=false',
         '--version=' + mongodb_version,
     ],
-    namespace='challenge-202502',
+    namespace='nodejs-k8s-github-rankings',
     resource_deps=['bitnami']
 )
 k8s_resource('mongodb', port_forwards=[27017], labels=['common'], trigger_mode=TRIGGER_MODE_MANUAL)
@@ -49,7 +49,7 @@ k8s_yaml(
     helm(
         './infra',
         name='app',
-        namespace='challenge-202502',
+        namespace='nodejs-k8s-github-rankings',
         set=[
             'deployment.image="api-nest"',
             'mongodb.host="mongodb"',
@@ -59,12 +59,12 @@ k8s_yaml(
         ],
   )
 )
-k8s_resource('challenge-app', port_forwards=[3000], labels=['app'])
+k8s_resource('nodejs-k8s-github-rankings-app', port_forwards=[3000], labels=['app'])
 
 local_resource(
    'trigger-import',
-   'kubectl create job --from=cronjob/app-mongoimport manual-import-$(date +%s) --namespace challenge-202502',
-    resource_deps=['challenge-app'], labels=['app'], trigger_mode=TRIGGER_MODE_MANUAL
+   'kubectl create job --from=cronjob/app-mongoimport manual-import-$(date +%s) --namespace nodejs-k8s-github-rankings',
+    resource_deps=['nodejs-k8s-github-rankings-app'], labels=['app'], trigger_mode=TRIGGER_MODE_MANUAL
 )
 
 k8s_resource('app-mongoimport', labels=['app-cronjob'])
@@ -82,7 +82,7 @@ tiltfile_path = config.main_path
 # https://docs.tilt.dev/api.html#api.config.tilt_subcommand
 if config.tilt_subcommand == 'up':
     print("""
-    \033[32m\033[32mHello World from ozby's challenge-202502!\033[0m
+    \033[32m\033[32mHello World from ozby's nodejs-k8s-github-rankings!\033[0m
 
     `{tiltfile}`
     """.format(tiltfile=tiltfile_path))

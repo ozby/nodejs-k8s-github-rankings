@@ -1,10 +1,10 @@
 ingress:
   enabled: true
-  host: challenge-202502.ozby.dev
+  host: nodejs-k8s-github-rankings.ozby.dev
   ingressClassName: nginx
 
 deployment:
-  image: ghcr.io/ozby/challenge-202502-app:latest
+  image: ghcr.io/ozby/nodejs-k8s-github-rankings-app:latest
 
 mongodb:
    host: mongodb.mongodb

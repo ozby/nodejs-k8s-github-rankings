@@ -2,7 +2,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: challenge-app-ingress
+  name: nodejs-k8s-github-rankings-app-ingress
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
     nginx.ingress.kubernetes.io/from-to-www-redirect: "true"
@@ -16,7 +16,7 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: challenge-app
+                name: nodejs-k8s-github-rankings-app
                 port:
                   number: 3000
 {{- end }}

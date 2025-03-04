@@ -14,7 +14,7 @@ tests:
           of: Deployment
       - equal:
           path: spec.template.spec.containers[0].image
-          value: ghcr.io/ozby/challenge-202502-app:latest
+          value: ghcr.io/ozby/nodejs-k8s-github-rankings-app:latest
       - equal:
           path: spec.template.spec.containers[0].env[0].name
           value: MONGODB_HOSTNAME

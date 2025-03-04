@@ -8,10 +8,12 @@ on:
     branches: [ main ]
     paths:
       - 'infra/**'
+      - '.github/workflows/helm-test.yaml'
   pull_request:
     branches: [ main ]
     paths:
       - 'infra/**'
+      - '.github/workflows/helm-test.yaml'
 
 jobs:
   test:
@@ -44,7 +46,6 @@ jobs:
       - name: Run import test
         env:
           RUN_ID: ${{ github.run_id }}
-          MONGODB_HOST: localhost:${{ job.services.mongodb.ports[27017] }}
           MONGODB_DATABASE: testdb
           MONGODB_USERNAME: testuser
           MONGODB_PASSWORD: testpass

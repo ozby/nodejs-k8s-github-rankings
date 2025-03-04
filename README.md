@@ -20,14 +20,14 @@ you can trigger the importing cron job manually by running: trigger-import in Ti
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: challenge-202502
+  name: nodejs-k8s-github-rankings
 spec:
   destination:
-    namespace: challenge-202502
+    namespace: nodejs-k8s-github-rankings
     server: https://kubernetes.default.svc
   source:
     path: infra
-    repoURL: https://github.com/ozby/challenge-202502.git
+    repoURL: https://github.com/ozby/nodejs-k8s-github-rankings.git
     targetRevision: HEAD
     helm:
       valueFiles:

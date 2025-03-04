@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: challenge-app
+  name: nodejs-k8s-github-rankings-app
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: challenge-app
+      app: nodejs-k8s-github-rankings-app
   template:
     metadata:
       labels:
-        app: challenge-app
+        app: nodejs-k8s-github-rankings-app
     spec:
       containers:
-      - name: challenge
+      - name: nodejs-k8s-github-rankings
         image: {{ .Values.deployment.image }}
         env:
           - name: MONGODB_HOSTNAME

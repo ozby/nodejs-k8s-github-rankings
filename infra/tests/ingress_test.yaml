@@ -6,14 +6,14 @@ tests:
     set:
       ingress:
         enabled: true
-        host: challenge-202502.ozby.dev
+        host: nodejs-k8s-github-rankings.ozby.dev
         ingressClassName: nginx
     asserts:
       - isKind:
           of: Ingress
       - equal:
           path: spec.rules[0].host
-          value: challenge-202502.ozby.dev
+          value: nodejs-k8s-github-rankings.ozby.dev
       - equal:
           path: spec.ingressClassName
           value: nginx
